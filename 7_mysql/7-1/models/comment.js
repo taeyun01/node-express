@@ -30,6 +30,8 @@ class Comment extends Sequelize.Model {
 
   static associate(db) {
     db.Comment.belongsTo(db.User, { foreignKey: "commenter", targetKey: "id" });
+    // db.Comment.belongsTo = 댓글은 속해있다 어디에?? db.User = 사용자에 속해있다.
+    // belongsTo일 때는 sourceKey가 아닌 targetKey다. 유저의 타겟(id)을 지정
   }
 }
 

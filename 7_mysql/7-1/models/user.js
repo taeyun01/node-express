@@ -47,8 +47,15 @@ class User extends Sequelize.Model {
     );
   }
 
+  // 사용자는 댓글을 여러개 쓸 수 있음, 댓글을 하나의 사용자만 바라보고 있음
+  // 시퀄라이즈에서는 1:N 관계를 hasMany로 표현 (사용자.hasMany(댓글))
+  // 반대의 입장에는 belongsTo로 표현 (댓글.belongsTo(사용자))
+  // db.User.hasMany(유저가 많이 갖고 있다) 뭐를? db.Comment 댓글을
   static associate(db) {
     db.User.hasMany(db.Comment, { foreignKey: "commenter", sourceKey: "id" });
+    // foreignKey: 외래키 (내가 아닌 남) 남이면 Comment다. 유저 입장에서 foreignKey는 Comment
+    // sourceKey: 외래키가 참조하는 컬럼 (나)
+    // 즉, Comment에 commenter라는 컬럼이 내 id를 참조하고 있다. (내 id(sourceKey)를 남의 foreignKey(commenter)가 참조하고 있다.)
   }
 }
 
