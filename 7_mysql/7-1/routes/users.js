@@ -1,10 +1,12 @@
-const express = require('express');
-const User = require('../models/user');
-const Comment = require('../models/comment');
+const express = require("express");
+const User = require("../models/user");
+const Comment = require("../models/comment");
 
 const router = express.Router();
 
-router.route('/')
+router
+  .route("/")
+  // 모든 사용자 조회
   .get(async (req, res, next) => {
     try {
       const users = await User.findAll();
@@ -14,6 +16,7 @@ router.route('/')
       next(err);
     }
   })
+  // 사용자 생성
   .post(async (req, res, next) => {
     try {
       const user = await User.create({
@@ -29,7 +32,8 @@ router.route('/')
     }
   });
 
-router.get('/:id/comments', async (req, res, next) => {
+// 특정 사용자 댓글 조회
+router.get("/:id/comments", async (req, res, next) => {
   try {
     const comments = await Comment.findAll({
       include: {
