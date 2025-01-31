@@ -24,7 +24,10 @@ class Hashtag extends Sequelize.Model {
     );
   }
 
-  static associate(db) {}
+  static associate(db) {
+    db.Hashtag.belongsToMany(db.Post, { through: "PostHashtag" }); // 해시태그는 여러개의 포스트를 가질 수 있으므로 다대다 관계
+    // through: "PostHashtag"에 접근하고 싶을 때 db.sequelize.models.PostHashtag
+  }
 }
 
 module.exports = Hashtag;

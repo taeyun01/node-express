@@ -61,6 +61,8 @@ class User extends Sequelize.Model {
       as: "Followings",
       through: "Follow",
     });
+    // User엔 foreignKey랑 as를 왜 적었냐??
+    // db.User.belongsToMany(db.User, ...); User가 두개 있어 둘이 뭐가 뭔지 모르니까 명시해줌
   }
 }
 
