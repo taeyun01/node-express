@@ -44,7 +44,22 @@ class User extends Sequelize.Model {
   }
 
   // 모델 관계 설정
-  static associate(db) {}
+  static associate(db) {
+    db.User.hasMany(db.Post);
+    // 한 사람이 여러명 팔로잉 할 수도 있고, 여러사람한테 팔로잉 당할 수도 있으니 다대다 관계(7_mysql참고)
+    db.User.belongsToMany(db.User, {
+      // 팔로워
+      foreignKey: "followingId", // 상대방의 아이디를 먼저 찾아야 팔로워들을 찾을 수 있음
+      as: "Followers",
+      through: "Follow",
+    });
+    db.User.belongsToMany(db.User, {
+      // 팔로잉
+      foreignKey: "followerId", // 내가 팔로잉하고있는 사람을 찾으려면 내 아이디를 먼저 찾아야함. 내 아이디를 찾아야만 내가 팔로잉하고 있는 사람을 찾을 수 있음
+      as: "Followings",
+      through: "Follow",
+    });
+  }
 }
 
 module.exports = User;
