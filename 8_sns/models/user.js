@@ -45,7 +45,9 @@ class User extends Sequelize.Model {
 
   // 모델 관계 설정
   static associate(db) {
+    // 한 사람이 여러개의 포스트를 쓸 수 있으니 일대다 관계
     db.User.hasMany(db.Post);
+
     // 한 사람이 여러명 팔로잉 할 수도 있고, 여러사람한테 팔로잉 당할 수도 있으니 다대다 관계(7_mysql참고)
     db.User.belongsToMany(db.User, {
       // 팔로워

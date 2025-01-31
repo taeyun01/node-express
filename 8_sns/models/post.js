@@ -27,7 +27,10 @@ class Post extends Sequelize.Model {
     );
   }
 
-  static associate(db) {}
+  static associate(db) {
+    db.Post.belongsTo(db.User); // 포스트는 한 사람이 쓰는 것이므로 일대일 관계
+    db.Post.belongsToMany(db.Hashtag, { through: "PostHashtag" }); // 포스트는 여러개의 해시태그를 가질 수 있으므로 다대다 관계, (as, foreignKey 안 적는 이유: 테이블 이름이 달라서 헷갈릴 염려가 없음)
+  }
 }
 
 module.exports = Post;
