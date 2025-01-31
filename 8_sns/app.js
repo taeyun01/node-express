@@ -6,6 +6,8 @@ const session = require("express-session");
 const nunjucks = require("nunjucks");
 const dotenv = require("dotenv");
 
+const { sequelize } = require("./models"); // db객체 안에 들어있는 sequelize
+
 dotenv.config(); // process.env
 const pageRouter = require("./routes/page"); // 페이지들을 해당 파일에 몰아둠
 
@@ -16,6 +18,17 @@ nunjucks.configure("views", {
   express: app,
   watch: true,
 });
+
+// sync를 해야지만 데이터베이스 연결이됨
+sequelize
+  .sync()
+  // .sync({ force: true }) // 혹시나 개발시에 테이블 잘못만들었을 때 사용하면 서버 재시작 후 테이블이 전부 제거됐다가 재생성됨. 배포할땐 절대 사용하면 안됨
+  .then(() => {
+    console.log("데이터베이스 연결 성공");
+  })
+  .catch((err) => {
+    console.error(err);
+  });
 
 app.use(morgan("dev")); // 로깅. 나중에 배포할 땐 combined로 변경
 app.use(express.static(path.join(__dirname, "public")));

@@ -5,6 +5,7 @@ const env = process.env.NODE_ENV || "development";
 const config = require("../config/config")[env];
 
 const db = {};
+// 데이터베이스 연결을 하는게 아닌 연결 하기위해 만들어 놓는 것
 const sequelize = new Sequelize(
   config.database,
   config.username,
