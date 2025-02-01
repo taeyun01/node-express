@@ -16,7 +16,7 @@ const authRouter = require("./routes/auth");
 const passportConfig = require("./passport");
 
 const app = express();
-passportConfig();
+passportConfig(); // 패스포트 설정
 
 app.set("port", process.env.PORT || 8001); // 포트번호 설정
 app.set("view engine", "html"); // 뷰엔진 설정 (페이지들 확장자는 html)
@@ -40,7 +40,7 @@ app.use(morgan("dev")); // 로깅. 나중에 배포할 땐 combined로 변경
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json()); // req.body를 ajax json 요청으로 부터 받아옴
 app.use(express.urlencoded({ extended: false })); // 폼 데이터 전송 시 req.body를 만들어줌(저장) form에서 보낸 name에 따라 저장됨. ex) name="nick" => req.body.nick
-app.use(cookieParser(process.env.COOKIE_SECRET));
+app.use(cookieParser(process.env.COOKIE_SECRET)); // 쿠키파서 역할은 브라우저에서 보낸 쿠키를 { connect.sid: 123123123123 } 이 객체 형태로 만들어보내줌
 app.use(
   session({
     resave: false,
