@@ -5,13 +5,19 @@ const path = require("path");
 const session = require("express-session");
 const nunjucks = require("nunjucks");
 const dotenv = require("dotenv");
+const passport = require("passport");
 
 const { sequelize } = require("./models"); // db객체 안에 들어있는 sequelize
 
 dotenv.config(); // process.env
+
 const pageRouter = require("./routes/page"); // 페이지들을 해당 파일에 몰아둠
+const authRouter = require("./routes/auth");
+const passportConfig = require("./passport");
 
 const app = express();
+passportConfig();
+
 app.set("port", process.env.PORT || 8001); // 포트번호 설정
 app.set("view engine", "html"); // 뷰엔진 설정 (페이지들 확장자는 html)
 nunjucks.configure("views", {
@@ -32,8 +38,8 @@ sequelize
 
 app.use(morgan("dev")); // 로깅. 나중에 배포할 땐 combined로 변경
 app.use(express.static(path.join(__dirname, "public")));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.json()); // req.body를 ajax json 요청으로 부터 받아옴
+app.use(express.urlencoded({ extended: false })); // 폼 데이터 전송 시 req.body를 만들어줌(저장) form에서 보낸 name에 따라 저장됨. ex) name="nick" => req.body.nick
 app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(
   session({
@@ -46,8 +52,12 @@ app.use(
     },
   })
 );
+// 패스포트에 필요한 미들웨어 설정 (반드시 세션 아래에 있어야함)
+app.use(passport.initialize()); // 패스포트를 연결 할 때 req.user, req.login, req.logout, req.isAuthenticated() 생성되어 사용 가능
+app.use(passport.session()); // connect.sid라는 이름으로 세션쿠키가 브라우저로 전송 (패스포트는 기본적으로 쿠키로 로그인함)
 
 app.use("/", pageRouter);
+app.use("/auth", authRouter);
 
 // pageRouter에 없는 라우터 에러처리 (404 NOT FOUND)
 app.use((req, res, next) => {
