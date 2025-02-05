@@ -15,7 +15,21 @@ module.exports = () => {
 
   // 세션{ 1290123412: 1}에서 유저아이디를 찾음 id: 1
   passport.deserializeUser((id, done) => {
-    User.findOne({ where: { id } }) // 그 id로 부터 db에서 유저 정보를 찾음
+    User.findOne({
+      where: { id },
+      include: [
+        {
+          model: User,
+          attributes: ["id", "nick"],
+          as: "Followers",
+        }, // 팔로잉
+        {
+          model: User,
+          attributes: ["id", "nick"],
+          as: "Followings",
+        }, // 팔로워
+      ],
+    }) // 그 id로 부터 db에서 유저 정보를 찾음
       .then((user) => done(null, user)) // 찾은 유저는 req.user에 저장, req.session은 connect.sid쿠키로 세션에서 찾을 때 생성된다.
       .catch((err) => done(err));
   });
