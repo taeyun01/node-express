@@ -23,7 +23,7 @@ module.exports = () => {
           } else {
             // 가입되지 않은 사용자라면 회원가입
             const newUser = await User.create({
-              email: profile._json && profile._json.kakao_account.email, // 이 구조가 바뀔수도 있기 때문에 위 profile 콘솔 확인
+              email: null, // 카카오에서 사용자 이메일 승인을 받아야 사용가능하기 때문에 null로 설정
               nick: profile.displayName,
               snsId: profile.id,
               provider: "kakao",

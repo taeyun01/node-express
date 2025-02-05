@@ -13,6 +13,7 @@ dotenv.config(); // process.env
 
 const pageRouter = require("./routes/page"); // 페이지들을 해당 파일에 몰아둠
 const authRouter = require("./routes/auth");
+const postRouter = require("./routes/post");
 const passportConfig = require("./passport");
 
 const app = express();
@@ -38,6 +39,7 @@ sequelize
 
 app.use(morgan("dev")); // 로깅. 나중에 배포할 땐 combined로 변경
 app.use(express.static(path.join(__dirname, "public")));
+app.use("/img", express.static(path.join(__dirname, "uploads"))); // 프론트에서 서버에 있는 이미지를 가져올 때는 경로지정 (단 /img 경로로 만들어줬기때문에 /img경로로 uploads 폴더에 있는 이미지를 가져올 수 있음)
 app.use(express.json()); // req.body를 ajax json 요청으로 부터 받아옴
 app.use(express.urlencoded({ extended: false })); // 폼 데이터 전송 시 req.body를 만들어줌(저장) form에서 보낸 name에 따라 저장됨. ex) name="nick" => req.body.nick
 app.use(cookieParser(process.env.COOKIE_SECRET)); // 쿠키파서 역할은 브라우저에서 보낸 쿠키를 { connect.sid: 123123123123 } 이 객체 형태로 만들어보내줌
@@ -58,7 +60,7 @@ app.use(passport.session()); // connect.sid라는 이름으로 세션쿠키가 �
 
 app.use("/", pageRouter);
 app.use("/auth", authRouter);
-
+app.use("/post", postRouter);
 // pageRouter에 없는 라우터 에러처리 (404 NOT FOUND)
 app.use((req, res, next) => {
   const error = new Error(`${req.method} ${req.url} 라우터가 없습니다.`);
