@@ -18,3 +18,23 @@ exports.follow = async (req, res, next) => {
     next(error);
   }
 };
+
+exports.unfollow = async (req, res, next) => {
+  // req.user.id, req.params.id
+  // console.log("내 아이디: ", req.user.id); // 숫자
+  // console.log("상대 아이디: ", req.params.id); // 문자열
+  try {
+    const user = await User.findOne({
+      where: { id: req.user.id },
+    });
+
+    if (user) {
+      await user.removeFollowing(parseInt(req.params.id, 10));
+    } else {
+      res.status(404).send("no user");
+    }
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+};
