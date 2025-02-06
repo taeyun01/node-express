@@ -18,7 +18,7 @@ const passportConfig = require("./passport");
 const app = express();
 passportConfig(); // 패스포트 설정
 
-app.set("port", process.env.PORT || 8001); // 포트번호 설정
+app.set("port", process.env.PORT || 8002); // 포트번호 설정
 app.set("view engine", "html"); // 뷰엔진 설정 (페이지들 확장자는 html)
 nunjucks.configure("views", {
   express: app,
