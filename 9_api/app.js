@@ -13,6 +13,7 @@ dotenv.config(); // process.env
 
 const authRouter = require("./routes/auth");
 const indexRouter = require("./routes");
+const v1Router = require("./routes/v1");
 const passportConfig = require("./passport");
 
 const app = express();
@@ -58,7 +59,7 @@ app.use(passport.session()); // connect.sid라는 이름으로 세션쿠키가 �
 
 app.use("/auth", authRouter);
 app.use("/", indexRouter);
-
+app.use("/v1", v1Router);
 // pageRouter에 없는 라우터 에러처리 (404 NOT FOUND)
 app.use((req, res, next) => {
   const error = new Error(`${req.method} ${req.url} 라우터가 없습니다.`);
