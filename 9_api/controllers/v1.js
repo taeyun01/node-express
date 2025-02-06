@@ -7,10 +7,12 @@ exports.createToken = async (req, res) => {
   try {
     const domain = await Domain.findOne({
       where: { clientSecret },
-      include: {
-        model: User,
-        attribute: ["id", "nick"],
-      },
+      include: [
+        {
+          model: User,
+          attributes: ["id", "nick"],
+        },
+      ],
     });
 
     // 도메인이 없으면 에러 발생
@@ -23,6 +25,7 @@ exports.createToken = async (req, res) => {
     // 도메인 있으면 토큰 생성하여 발급
     // jwt옵션들은 공식문서 확인
     const token = jwt.sign(
+      // 토큰 내용들
       {
         id: domain.User.id, // 유저 아이디
         nick: domain.User.nick, // 유저 닉네임
@@ -47,5 +50,5 @@ exports.createToken = async (req, res) => {
 
 // 토큰 내용물들 다시 프론트에만 보내주는(표시해주는) 간단한 역할
 exports.tokenTest = (req, res) => {
-  res.json({ code: 200, message: "토큰 검사 완료" });
+  res.json(res.locals.decoded);
 };
