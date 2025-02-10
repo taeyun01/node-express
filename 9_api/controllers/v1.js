@@ -55,7 +55,7 @@ exports.tokenTest = (req, res) => {
 
 // await async없이 프로미스로만 사용해보기
 //* 내 게시글 가져가는 api 컨트롤러
-exports.getMyPosts = () => {
+exports.getMyPosts = (req, res) => {
   Post.findAll({
     where: { userId: res.locals.decoded.id }, // middleware/index에서 토큰 검증 후 넣어준 값
   })
