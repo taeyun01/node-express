@@ -48,7 +48,10 @@ exports.getMyPosts = async (req, res, next) => {
 // 해시태그로 게시글 조회
 exports.searchByHashtag = async (req, res, next) => {
   try {
-    const result = await request(req, `/posts/hashtag/${req.params.hashtag}`);
+    const result = await request(
+      req,
+      `/posts/hashtag/${encodeURIComponent(req.params.hashtag)}`
+    ); // 주소창에 한글 인식 안될경우에는 encodeURIComponent로 한번 감싸줘야함
     res.json(result.data);
   } catch (error) {
     console.error(error);
