@@ -1,4 +1,7 @@
 const jwt = require("jsonwebtoken");
+const rateLimit = require("express-rate-limit");
+
+const { User } = require("../models");
 
 // 여러 라우터에서 공통적으로 쓰이는 미들웨어는 index.js에 모아둠
 
@@ -44,4 +47,42 @@ exports.verifyToken = (req, res, next) => {
       .status(401)
       .json({ code: 401, message: "유효하지 않은 토큰입니다." });
   }
+};
+
+// 요청에 횟수제한을 두는 api limit
+// rateLimit는 디도스공격 방어에는 효과가 없는 경우가 많다. 디도스는 여러명의 컴퓨터가 내 서버로 요청을 많이 보내는 것이기 때문에 요청이 전송만되면 공격 성공이다.
+// rateLimit가 있다고해도 요청을 받은거니 요청을 받고나서 rateLimit가 걸러낸것이기 때문에 엄밀히 말하면 디도스 공격을 당한것이다.
+//* 실무에서는 울가 보호해야할 서버 앞에 또 다른 서버를 하나 더 둔다. 그 서버에서 디도스 공격을 막아 방패막이 역할처럼 디도스공격인지 검사하는 서버를 둔다. (AWS나 cloudflare 등등에 이런 서비스들이 있다.)
+exports.apiLimiter = async (req, res, next) => {
+  let user;
+  // 토큰이 있으면 사용자를 찾음 (decoded가 있으면 사용자를 찾아서 user에 넣음)
+  if (res.locals.decoded) {
+    user = await User.findOne({ where: { id: res.locals.decoded.id } }); // 사용자를 먼저 찾음
+  }
+
+  // if (!user) {
+  //   return res.status(401).json({
+  //     code: 401,
+  //     message: "사용자가 존재하지 않습니다.",
+  //   });
+  // }
+
+  rateLimit({
+    windowMs: 60 * 1000, // 1분
+    max: user?.type === "premium" ? 1000 : 10, // 1분에 딱 10번만 요청 가능 (premium 사용자는 1000번까지 요청 가능)
+    handler(req, res) {
+      res.status(this.statusCode).json({
+        code: this.statusCode,
+        message: "1분에 10번만 요청할 수 있습니다.",
+      });
+    },
+  })(req, res, next);
+};
+
+// 버전 업데이트 되었을 때 사용하는 미들웨어 (옛날버전 사용하지말라는 메시지)
+exports.deprecated = (req, res) => {
+  res.status(410).json({
+    code: 410,
+    message: "새로운 버전이 나왔습니다. 새로운 버전을 사용해주세요.",
+  });
 };

@@ -28,16 +28,18 @@ const request = async (req, api) => {
       return request(req, api); // 다시 재귀함수로 토큰 재발급 요청
     }
     // 토큰이 위조되었을 때
-    throw error.response;
+    // throw error.response; //* throw와 return의 차이점
+    return error.response; //* return을 하면 에러가 없는거기 때문에 바로 getMyPosts 함수에 try로 넘어감. 그리고 화면에 json데이터로 표시됨
+    // throw error.response; //* throw를 하면 에러가 있는거기 때문에 바로 getMyPosts 함수에 catch로 넘어감. 그리고 그리고 next(error)로 에러 처리 미드웨어 함수로 넘어가서 에러코드만 띄어줌
   }
 };
 
 // 내 게시글 조회
 exports.getMyPosts = async (req, res, next) => {
   try {
-    console.log("Requesting my posts...");
+    // console.log("Requesting my posts...");
     const result = await request(req, "/posts/my");
-    console.log("Received result:", result.data);
+    // console.log("Received result:", result.data);
     res.json(result.data);
   } catch (error) {
     console.error("Error fetching my posts:", error);
