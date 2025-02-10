@@ -1,7 +1,8 @@
 const jwt = require("jsonwebtoken");
 const rateLimit = require("express-rate-limit");
+const cors = require("cors");
 
-const { User } = require("../models");
+const { User, Domain } = require("../models");
 
 // 여러 라우터에서 공통적으로 쓰이는 미들웨어는 index.js에 모아둠
 
@@ -85,4 +86,24 @@ exports.deprecated = (req, res) => {
     code: 410,
     message: "새로운 버전이 나왔습니다. 새로운 버전을 사용해주세요.",
   });
+};
+
+// 도메인이 일치할 때만 cors 허용
+exports.corsWhenDomainMatches = async (req, res, next) => {
+  const domain = await Domain.findOne({
+    where: {
+      host: new URL(req.get("origin")).host, // 클라이언트 요청 주소의 도메인을 가져옴 (http를 떼고 도메인만 가져옴)
+    },
+  });
+
+  // 도메인이 일치하면 cors 적용
+  if (domain) {
+    cors({
+      origin: req.get("origin"),
+      credentials: true,
+    })(req, res, next);
+  } else {
+    // 도메인이 일치하지 않으면 cors 에러
+    next();
+  }
 };

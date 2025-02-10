@@ -61,6 +61,14 @@ exports.searchByHashtag = async (req, res, next) => {
   }
 };
 
+// 메인 페이지 렌더링
+// 브라우저에서 서버로 요청할 때 무슨 문제가 발생하는지 확인
+exports.renderMain = (req, res) => {
+  res.render("main", {
+    key: process.env.CLIENT_SECRET,
+  });
+};
+
 // localhost:4000 서버에서 localhost:8002 api서버로 요청을 보내는 역할
 // 토큰 테스트 라우터
 // exports.test = async (req, res, next) => {

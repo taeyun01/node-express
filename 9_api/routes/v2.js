@@ -6,8 +6,22 @@ const {
   getMyPosts,
   getPostsByHashtag,
 } = require("../controllers/v2"); // 버전 변경 시 컨트롤러 파일 버전도 알맞게 변경
+const cors = require("cors");
 
-const { verifyToken, apiLimiter } = require("../middlewares");
+const {
+  verifyToken,
+  apiLimiter,
+  corsWhenDomainMatches,
+} = require("../middlewares");
+
+// 원래는 cors에러 메세지가 뜨면 헤더에 일일히 넣어줘야하는데, 복잡하기도 ㅇ하고 또 어떤 에러가 나올지 모르니 cors모듈 사용
+// router.use((req, res, next) => {
+//   res.setHeader("Access-Control-Allow-Origin", "http://localhost:4000");
+//   res.setHeader("Access-Control-Allow-Headers", "content-type");
+//   next();
+// });
+
+router.use(corsWhenDomainMatches);
 
 // v1/token
 router.post("/token", apiLimiter, createToken); // req.body.clientSecret (프론트에서 req.body로 보내줌)
