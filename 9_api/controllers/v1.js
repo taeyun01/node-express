@@ -1,4 +1,4 @@
-const { Domain, User } = require("../models");
+const { Domain, User, Post, Hashtag } = require("../models");
 const jwt = require("jsonwebtoken");
 
 // 토큰 발급
@@ -51,4 +51,48 @@ exports.createToken = async (req, res) => {
 // 토큰 내용물들 다시 프론트에만 보내주는(표시해주는) 간단한 역할
 exports.tokenTest = (req, res) => {
   res.json(res.locals.decoded);
+};
+
+// await async없이 프로미스로만 사용해보기
+//* 내 게시글 가져가는 api 컨트롤러
+exports.getMyPosts = () => {
+  Post.findAll({
+    where: { userId: res.locals.decoded.id }, // middleware/index에서 토큰 검증 후 넣어준 값
+  })
+    .then((posts) => {
+      res.json({ code: 200, payload: posts });
+    })
+    .catch((error) => {
+      console.error(error);
+      return res.status(500).json({ code: 500, message: "서버 에러" });
+    });
+};
+
+//* 해시태그 검색 후 관련 게시글 가져가는 api 컨트롤러
+exports.getPostsByHashtag = async (req, res) => {
+  try {
+    const hashtag = await Hashtag.findOne({
+      where: { title: req.params.title },
+    });
+
+    // 해시태그 검색결과가 없을 시 예외처리
+    if (!hashtag) {
+      return res
+        .status(404)
+        .json({ code: 404, message: "검색 결과가 없습니다." });
+    }
+
+    const posts = await hashtag.getPosts();
+
+    if (posts.length === 0) {
+      return res
+        .status(404)
+        .json({ code: 404, message: "검색 결과가 없습니다." });
+    }
+
+    return res.json({ code: 200, payload: posts });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ code: 500, message: "서버 에러" });
+  }
 };
