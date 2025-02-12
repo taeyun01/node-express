@@ -3,7 +3,8 @@
   "version": "0.0.1",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon app"
+    "start": "nodemon app",
+    "test": "jest"
   },
   "keywords": [],
   "author": "",
@@ -30,6 +31,7 @@
     "uuid": "^11.0.5"
   },
   "devDependencies": {
+    "jest": "^29.7.0",
     "nodemon": "^3.1.9"
   }
 }
