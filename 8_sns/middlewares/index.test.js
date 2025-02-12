@@ -1,4 +1,4 @@
-const { isLoggedIn, isNotLoggedIn } = require("./");
+const { isLoggedIn, isNotLoggedIn } = require("../../9_api/middlewares");
 
 describe("isLoggedIn", () => {
   // 중복으로 사용되는 공통 객체는 빼내어 사용

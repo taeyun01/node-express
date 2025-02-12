@@ -10,6 +10,7 @@ exports.follow = async (req, res, next) => {
     // DB에서 찾는 데이터가 없을수도 있음. 예외처리 꼭 하기
     if (user) {
       await user.addFollowing(parseInt(req.params.id, 10));
+      res.send("success");
     } else {
       res.status(404).send("no user");
     }

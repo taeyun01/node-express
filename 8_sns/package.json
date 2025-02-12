@@ -4,7 +4,7 @@
   "description": "sns service",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "start": "nodemon app.js"
   },
   "author": "taeyun",
@@ -26,6 +26,7 @@
     "sequelize-cli": "^6.6.2"
   },
   "devDependencies": {
+    "jest": "^29.7.0",
     "nodemon": "^3.1.9"
   }
 }
