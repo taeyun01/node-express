@@ -22,7 +22,10 @@ fs.readdirSync(__dirname) // 현재 폴더(models)의 모든 파일을 조회
     // 모델이 아닌 파일이 들어가지 안게끔 필터링
     // 숨김 파일(.env같은), index.js, js 확장자가 아닌 파일 필터링 (index.js는 모델이 아니므로 제외)
     return (
-      file.indexOf(".") !== 0 && file !== basename && file.slice(-3) === ".js"
+      file.indexOf(".") !== 0 &&
+      !file.includes("test") &&
+      file !== basename &&
+      file.slice(-3) === ".js"
     );
   })
   .forEach((file) => {
