@@ -7,7 +7,6 @@ const nunjucks = require("nunjucks");
 const dotenv = require("dotenv");
 
 dotenv.config();
-
 const webSocket = require("./socket");
 const indexRouter = require("./routes");
 
@@ -55,5 +54,4 @@ const server = app.listen(app.get("port"), () => {
   console.log(app.get("port"), "번 포트에서 대기중");
 });
 
-// 웹소켓 서버 연결
 webSocket(server);
