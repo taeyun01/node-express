@@ -7,18 +7,21 @@
   </head>
   <body>
     F12를 눌러 console 탭과 network 탭을 확인해보세요.
+
+    <!-- socket.io 스크립트가 있어야 io라는 모듈을 사용가능 -->
+    <script src="/socket.io/socket.io.js"></script>
+
     <script>
       // 브라우저에서는 기본적으로 웹소켓을 지원하기 때문에 모듈을 설치 할 필요없음
-      const webSoket = new WebSocket("ws://localhost:8005");
-      webSoket.onopen = () => {
-        console.log("서버와 웹 소켓 연결 성공");
-      };
+      const socket = io("http://localhost:8005", {
+        path: "/socket.io",
+        transports: ["websocket"], // 폴링 방식을 시도하지 않고, 웹소켓만 사용고 싶을 때
+      });
 
-      // 서버에서 메시지를 받았을 때 실행
-      webSoket.onmessage = (event) => {
-        console.log(event.data);
-        webSoket.send("클라이언트에서 서버로 메시지 전송"); // 메시지 보내는것
-      };
+      socket.on("news", (data) => {
+        console.log(data);
+        socket.emit("reply", "Hello 노드js");
+      });
     </script>
   </body>
 </html>

@@ -1,7 +1,7 @@
 const SocketIO = require("socket.io");
 
 module.exports = (server) => {
-  const io = SocketIO(server, { path: "/socket.io" });
+  const io = SocketIO(server, { path: "/socket.io" }); // 클라이언트와 연결을 맺을 때 사용하는 경로 (path까지 붙혀야 서버로 연결이됨)
 
   io.on("connection", (socket) => {
     // 웹소켓 연결 시
@@ -18,12 +18,12 @@ module.exports = (server) => {
       console.error(error);
     });
     socket.on("reply", (data) => {
-      // 클라이언트로부터 메시지
+      // 클라이언트로부터 보낸 메시지
       console.log(data);
     });
     socket.interval = setInterval(() => {
       // 3초마다 클라이언트로 메시지 전송
-      socket.emit("news", "Hello Socket.IO");
+      socket.emit("news", "Hello Socket.IO"); // news라는 이벤트로 메시지 전송 (브라우저에서는 socket.on("news", (data) => { console.log(data); }) 이렇게 받음)
     }, 3000);
   });
 };
