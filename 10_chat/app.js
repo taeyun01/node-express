@@ -6,6 +6,7 @@ const session = require("express-session");
 const nunjucks = require("nunjucks");
 const dotenv = require("dotenv");
 const connect = require("./schemas");
+const ColorHash = require("color-hash").default; // color-hash 2버전은 default붙혀줌
 
 dotenv.config();
 const webSocket = require("./socket");
@@ -38,6 +39,16 @@ app.use(
   })
 );
 
+app.use((req, res, next) => {
+  // 세션에 색상이 없으면 색상 생성 (익명 채팅방에서 컬러로 유저를 구분)
+  if (!req.session.color) {
+    const colorHash = new ColorHash();
+    req.session.color = colorHash.hex(req.sessionID); // 세션에 색상 저장
+    console.log(req.session.color, req.sessionID);
+  }
+  next();
+});
+
 app.use("/", indexRouter);
 
 app.use((req, res, next) => {
@@ -57,4 +68,4 @@ const server = app.listen(app.get("port"), () => {
   console.log(app.get("port"), "번 포트에서 대기중");
 });
 
-webSocket(server);
+webSocket(server, app);
